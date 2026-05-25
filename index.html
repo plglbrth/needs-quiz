@@ -1140,10 +1140,21 @@ var LOADING_MESSAGES = [
 ];
 
 var CRED_CONTENT = {
-  familiar:   'The questions that follow are based on the Primal Human Needs — nine foundations that underlie psychological wellbeing. You\'ve already experienced what hypnosis can do. This finder works out which need is most out of balance right now, and matches the sessions most likely to address it at the root.',
-  meditation: 'If you meditate, you\'ve already been in a hypnotic state — you just called it something else. Both use absorbed, inwardly-focused attention. The difference is purpose: hypnosis works toward a specific goal — updating a pattern, resolving a fear, shifting a habit. Think of it as meditation with direction.',
-  apps:       'Breathing exercises and mindfulness apps help you manage how you feel in the moment. What they\'re less able to do is update the pattern that keeps generating the feeling. Hypnosis works at the level where those patterns actually live — not instead of your self-awareness, but using it.',
-  new:        'Stage hypnosis — people clucking like chickens — is entertainment, not therapy. Our sessions work like a deeply focused guided relaxation. You stay fully aware. Nothing is done \'to\' you. Most people say it feels like the moment just before sleep, but with a quiet sense of purpose.'
+  familiar:
+    '<p class="cred-quote">You already know the state — but you may not have encountered <strong>Uncommon Hypnosis</strong>. Rather than softly spoken instructions, our sessions use storytelling, metaphor and analogy. This is how the unconscious mind actually communicates, and it\'s why our sessions tend to feel different to traditional hypnosis. More absorbing, more personal, more effective for most people.</p>'+
+    '<div class="cred-stat">97% of 9,566 surveyed customers said they were happy — <a href="https://www.hypnosisdownloads.com/testimonials" style="color:var(--accent);text-decoration:none;">read real stories</a></div>',
+
+  meditation:
+    '<p class="cred-quote">If you meditate regularly, you\'ve already been in a hypnotic state — you just called it something else. Both use absorbed, inwardly-focused attention. The difference is direction: meditation tends toward open awareness, while hypnosis works toward a specific goal. The relaxed, receptive state you already know how to reach is exactly what makes it work.</p>'+
+    '<div class="cred-stat">97% of 9,566 surveyed customers said they were happy — <a href="https://www.hypnosisdownloads.com/testimonials" style="color:var(--accent);text-decoration:none;">read real stories</a></div>',
+
+  apps:
+    '<p class="cred-quote">Breathing apps and mindfulness tools help you manage how you feel in the moment. What they\'re less able to do is update the pattern that keeps generating the feeling in the first place. Hypnosis works at the level where those patterns actually live — not instead of your self-awareness, but using it.</p>'+
+    '<div class="cred-stat">97% of 9,566 surveyed customers said they were happy — <a href="https://www.hypnosisdownloads.com/testimonials" style="color:var(--accent);text-decoration:none;">read real stories</a></div>',
+
+  new:
+    '<p class="cred-quote">Two things worth knowing before you begin. First: you stay completely aware throughout — nothing is done \'to\' you. You can stop any time. Second: you\'ve almost certainly already experienced something like this — reading so deeply you didn\'t hear your name called, or driving a familiar route without remembering it. That absorbed, inward focus is hypnosis. Our sessions just use it with purpose.</p>'+
+    '<div class="cred-stat">97% of 9,566 surveyed customers said they were happy — <a href="https://www.hypnosisdownloads.com/testimonials" style="color:var(--accent);text-decoration:none;">read real stories</a></div>'
 };
 
 function startLoading() {
@@ -1154,9 +1165,7 @@ function startLoading() {
 
   // Set tailored cred copy
   var credText = CRED_CONTENT[q1] || CRED_CONTENT.new;
-  credEl.innerHTML = '<p class="cred-quote">'+credText+'</p>'+
-    '<div class="cred-stat">97% of 9,566 surveyed customers said they were happy — '+
-    '<a href="https://www.hypnosisdownloads.com/testimonials" style="color:var(--accent);text-decoration:none;">read real stories</a></div>';
+  credEl.innerHTML = credText;
 
   // Animate progress bar over 5 seconds
   var duration = 10000;
@@ -1418,16 +1427,67 @@ function buildResults() {
   document.getElementById('results-sessions').innerHTML = html ||
     '<p style="color:var(--ink-mid);font-size:0.875rem;">No exact matches found. <a href="https://www.hypnosisdownloads.com/all-downloads" style="color:var(--accent);">Browse all sessions →</a></p>';
 
-  // Social proof
-  document.getElementById('results-proof').innerHTML =
-    '<div class="proof-grid">'+
-      '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
-        '<div class="proof-text">"Life-changing experience! I\'ve bought around 20 sessions over the last couple of years because they\'re just amazing and have helped me work on so many different areas."</div>'+
-        '<div class="proof-who">— Great self-hypnosis services · Trustpilot</div></div>'+
-      '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
-        '<div class="proof-text">"No matter what your issue is, there\'s hypnosis for it. It has helped me so much and I am recommending it to anyone that will listen."</div>'+
-        '<div class="proof-who">— Brilliant hypnosis app · Trustpilot</div></div>'+
-    '</div>';
+  // Social proof — tailored by familiarity
+  var proofHtml = '';
+
+  if(q1 === 'new' || q1 === 'apps') {
+    // Sceptic strip — myth busters + reviews
+    proofHtml =
+      '<div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem;">'+
+        '<p style="font-size:0.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);margin-bottom:0.75rem;">A few things worth knowing</p>'+
+        '<div style="display:flex;flex-direction:column;gap:0.625rem;">'+
+          '<div style="display:flex;align-items:flex-start;gap:0.625rem;">'+
+            '<span style="color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>'+
+            '<p style="font-size:0.825rem;color:var(--ink);line-height:1.6;font-weight:300;margin:0;">You stay completely aware throughout. Nothing is done \'to\' you — you can stop any time.</p>'+
+          '</div>'+
+          '<div style="display:flex;align-items:flex-start;gap:0.625rem;">'+
+            '<span style="color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>'+
+            '<p style="font-size:0.825rem;color:var(--ink);line-height:1.6;font-weight:300;margin:0;">You\'ve almost certainly already experienced it — reading so deeply you didn\'t hear your name called, or driving a route and not remembering it. That\'s hypnosis.</p>'+
+          '</div>'+
+          '<div style="display:flex;align-items:flex-start;gap:0.625rem;">'+
+            '<span style="color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>'+
+            '<p style="font-size:0.825rem;color:var(--ink);line-height:1.6;font-weight:300;margin:0;">Most people can use hypnosis effectively. Our Uncommon Hypnosis approach — storytelling and metaphor — speaks the language the unconscious actually uses, which is why 99% of people can benefit.</p>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="proof-grid">'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"I have tried hypnosis from several other people in the past and was disappointed each time. Until I found Hypnosis Downloads. After just one session I was shocked by the progress I\'d made."</div>'+
+          '<div class="proof-who">— Transformative and effective · Trustpilot</div></div>'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"I haven\'t had much experience with self-hypnosis. Now I am able to get into a hypnotic state very quickly, and it\'s only been a couple of weeks."</div>'+
+          '<div class="proof-who">— Just starting out · Trustpilot</div></div>'+
+      '</div>';
+
+  } else if(q1 === 'familiar') {
+    // Returning user — Uncommon Hypnosis note + reviews
+    proofHtml =
+      '<div style="background:var(--accent-light);border:1.5px solid rgba(111,179,42,0.25);border-radius:var(--radius);padding:0.875rem 1.1rem;margin-bottom:1rem;">'+
+        '<p style="font-size:0.825rem;color:var(--ink);line-height:1.65;font-weight:300;margin:0;">Our sessions use <a href="https://www.hypnosisdownloads.com/uncommon-hypnosis" style="color:var(--accent);text-decoration:none;font-weight:600;">Uncommon Hypnosis</a> — storytelling and metaphor rather than direct suggestion. If previous hypnosis felt generic or mechanical, this is why ours tends to feel different.</p>'+
+      '</div>'+
+      '<div class="proof-grid">'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"Life-changing experience. I\'ve bought around 20 sessions over the last couple of years — some of them have literally changed my life."</div>'+
+          '<div class="proof-who">— Great self-hypnosis services · Trustpilot</div></div>'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"No matter what your issue is, there\'s hypnosis for it. It has helped me so much and I am recommending it to anyone that will listen."</div>'+
+          '<div class="proof-who">— Brilliant hypnosis app · Trustpilot</div></div>'+
+      '</div>';
+
+  } else {
+    // Meditation / default
+    proofHtml =
+      '<div class="proof-grid">'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"Life-changing experience. I\'ve bought around 20 sessions over the last couple of years — some of them have literally changed my life."</div>'+
+          '<div class="proof-who">— Great self-hypnosis services · Trustpilot</div></div>'+
+        '<div class="proof-card"><div class="proof-stars">★★★★★</div>'+
+          '<div class="proof-text">"No matter what your issue is, there\'s hypnosis for it. It has helped me so much and I am recommending it to anyone that will listen."</div>'+
+          '<div class="proof-who">— Brilliant hypnosis app · Trustpilot</div></div>'+
+      '</div>';
+  }
+
+  document.getElementById('results-proof').innerHTML = proofHtml;
 
   // Ontraport hidden fields — include profile name in the path string
   var path = q1 + '|' + selNeed.id + '|' + profile.name + '|' + selL1.label.slice(0,40);
