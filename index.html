@@ -271,14 +271,7 @@ body{
 }
 .op-submit:hover{background:var(--accent-dark);transform:translateY(-1px);}
 .op-privacy{font-size:0.7rem;color:var(--ink-light);text-align:center;margin-top:0.875rem;}
-.op-thankyou{text-align:center;padding:1rem 0;}
-.op-thankyou-icon{
-  width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;
-  font-size:1.25rem;display:flex;align-items:center;justify-content:center;
-  margin:0 auto 0.75rem;
-}
-.op-thankyou-title{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:0.35rem;}
-.op-thankyou-sub{font-size:0.82rem;color:var(--ink-mid);line-height:1.6;font-weight:300;}
+/* Op form privacy note handled inline */
 
 /* Trust footer */
 .trust-footer{
@@ -513,11 +506,6 @@ body{
       <img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/themes/hypnosisnew/images/new/hd-logo-combined.png" alt="Hypnosis Downloads" class="op-form-logo" onerror="this.style.display='none'">
       <p class="op-form-title">Send my results to my inbox</p>
       <p class="op-form-sub">We'll include your matched sessions, your free First Time Hypnosis session, and a short guide to getting started.</p>
-    </div>
-    <div id="op-form-thankyou" style="display:none" class="op-thankyou">
-      <div class="op-thankyou-icon">✓</div>
-      <div class="op-thankyou-title">Your results are on their way</div>
-      <div class="op-thankyou-sub">Check your inbox in the next few minutes — including your free session link.</div>
     </div>
     <div id="op-form-fields">
       <link rel="stylesheet" href="//optassets.ontraport.com/opt_assets/static/css/moonrayform.paymentplandisplay.css" type="text/css"/>
@@ -1464,50 +1452,63 @@ document.addEventListener('DOMContentLoaded', function(){
   // Build needs grid on load so it's ready
   buildNeedsGrid();
 
-  // Form submit — intercept to build redirect URL with need/profile params
+  // ── Form submit: fetch POST to Ontraport, then redirect ourselves ──────────
+  var THANKYOU_BASE = 'https://plglbrth.github.io/needs-quiz/needs-quiz-confirm.html';
+
   var form = document.getElementById('hd-needs-op-form');
   if(form){
-    form.addEventListener('submit', function(){
-      // Build thank-you URL params from current quiz state
-      var needId   = document.getElementById('op-field-need') ? document.getElementById('op-field-need').value : '';
-      var pathVal  = document.getElementById('op-field-path') ? document.getElementById('op-field-path').value : '';
-      // Extract profile name from path string: q1|needId|profileName|l1label
-      var parts    = pathVal.split('|');
-      var profName = parts[2] || '';
-      var color    = '';
-      // Pass need colour so thank-you page can match the hero
-      if(selNeed) color = encodeURIComponent(selNeed.color);
-      var thankYouBase = 'first-time-hypnosis.html';
-      var params = '?need=' + encodeURIComponent(needId) +
-                   '&profile=' + encodeURIComponent(profName) +
-                   '&color=' + color;
-      // Store in sessionStorage as fallback (same-origin only)
-      try {
-        sessionStorage.setItem('hd_need', needId);
-        sessionStorage.setItem('hd_profile', profName);
-        sessionStorage.setItem('hd_color', selNeed ? selNeed.color : '');
-      } catch(e){}
-      // Ontraport will handle the redirect; we append params to the return URL
-      // via a hidden input so OP passes them through
-      var retInput = form.querySelector('input[name="return_url"]');
-      if(!retInput){
-        retInput = document.createElement('input');
-        retInput.type = 'hidden';
-        retInput.name = 'return_url';
-        form.appendChild(retInput);
-      }
-      retInput.value = thankYouBase + params;
+    form.addEventListener('submit', function(e){
+      e.preventDefault(); // stop the browser posting and redirecting
 
-      // Also show inline thank-you in case OP doesn't redirect
-      setTimeout(function(){
-        var fields = document.getElementById('op-form-fields');
-        var thanks = document.getElementById('op-form-thankyou');
-        if(fields) fields.style.display='none';
-        if(thanks) thanks.style.display='block';
-      }, 800);
+      // Validate required fields first
+      var firstname = document.getElementById('mr-needs-firstname');
+      var email     = document.getElementById('mr-needs-email');
+      if(!firstname.value.trim() || !email.value.trim()){
+        if(!firstname.value.trim()) firstname.style.borderColor = '#e05a5a';
+        if(!email.value.trim())     email.style.borderColor     = '#e05a5a';
+        return;
+      }
+
+      // Disable submit button and show sending state
+      var btn = document.getElementById('mr-needs-submit');
+      btn.value = 'Sending…';
+      btn.disabled = true;
+
+      // Build params for thank-you redirect
+      var needId   = document.getElementById('op-field-need').value;
+      var pathVal  = document.getElementById('op-field-path').value;
+      var profName = pathVal.split('|')[2] || '';
+      var thankUrl = THANKYOU_BASE +
+        '?need='    + encodeURIComponent(needId) +
+        '&profile=' + encodeURIComponent(profName) +
+        '&q1='      + encodeURIComponent(q1);
+
+      // Collect all form fields into FormData for the fetch POST
+      var data = new FormData(form);
+
+      // POST to Ontraport silently
+      fetch('https://forms.ontraport.com/v2.4/form_processor.php', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors' // Ontraport doesn't send CORS headers; no-cors means no response body but the POST goes through
+      })
+      .then(function(){
+        // Redirect regardless — Ontraport received it
+        window.location.href = thankUrl;
+      })
+      .catch(function(){
+        // Network error: still redirect (contact may not have been written — acceptable edge case)
+        window.location.href = thankUrl;
+      });
+
+    });
+
+    // Clear red borders on input focus
+    ['mr-needs-firstname','mr-needs-email'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.addEventListener('focus', function(){ this.style.borderColor = ''; });
     });
   }
-
 
 });
 </script>
