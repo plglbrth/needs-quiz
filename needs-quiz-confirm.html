@@ -19,9 +19,17 @@
 html,body{min-height:100%;font-size:17px;}
 body{
   font-family:'Open Sans',Arial,sans-serif;background:var(--bg);color:var(--ink);
-  display:flex;flex-direction:column;align-items:center;padding:0 1rem 5rem;
+  display:flex;flex-direction:column;align-items:center;padding:0 0 5rem;
 }
-.page-wrap{width:100%;max-width:680px;}
+
+/* White header bar */
+.site-header{
+  width:100%;background:#fff;border-bottom:1px solid var(--border);
+  padding:1.1rem 1.5rem;display:flex;align-items:center;
+  margin-bottom:1.75rem;
+}
+.site-header img{height:36px;width:auto;display:block;}
+.page-wrap{width:100%;max-width:680px;padding:0 1rem;}
 
 /* Confirmation banner */
 .confirm-banner{
@@ -138,10 +146,11 @@ body{
 .default-hero-sub{font-size:0.825rem;color:var(--ink-mid);line-height:1.6;font-weight:300;}
 
 @media(max-width:480px){.app-card{flex-direction:column;align-items:flex-start;}.app-buttons{flex-direction:row;}}
-@media(min-width:768px){body{padding:0 2.5rem 5rem;}.hero-title{font-size:2rem;}}
+@media(min-width:768px){.site-header{padding:1.1rem 2.5rem;}.page-wrap{padding:0 2.5rem;}.hero-title{font-size:2rem;}}
 @media(min-width:1100px){
-  body{padding:0 3rem 5rem;display:grid;grid-template-columns:1fr min(960px,100%) 1fr;}
-  body>*{grid-column:2;}
+  body{padding:0 0 5rem;}
+  .site-header{padding:1.1rem 3rem;}
+  .page-wrap{max-width:780px;padding:0 3rem;}
   .hero-title{font-size:2.25rem;}
   .two-col{display:grid;grid-template-columns:1fr 360px;gap:1.5rem;align-items:start;}
   .two-col>*{min-width:0;}
@@ -149,6 +158,12 @@ body{
 </style>
 </head>
 <body>
+<header class="site-header">
+  <a href="https://www.hypnosisdownloads.com">
+    <img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/themes/hypnosisnew/images/new/hd-logo-combined.png" alt="Hypnosis Downloads">
+  </a>
+</header>
+
 <div class="page-wrap">
 
   <!-- Confirmation banner -->
