@@ -226,8 +226,9 @@ body{
 /* OP Form */
 .op-form-wrap{
   background:var(--bg-card);border:1.5px solid var(--border);
-  border-radius:var(--radius-lg);padding:1.75rem;margin-top:1.5rem;
-  max-width:480px;margin-left:auto;margin-right:auto;
+  border-radius:var(--radius-lg);padding:1.75rem;
+  margin:1.5rem auto 0;
+  max-width:480px;width:100%;
 }
 .op-form-header{text-align:center;margin-bottom:1.25rem;}
 .op-form-logo{height:32px;width:auto;margin-bottom:1rem;}
@@ -238,11 +239,30 @@ body{
 .op-label{font-size:0.78rem;font-weight:600;color:var(--ink);}
 .op-input{
   font-family:'Open Sans',Arial,sans-serif;font-size:0.875rem;
-  border:1.5px solid var(--border);border-radius:var(--radius);
+  border:1.5px solid var(--border) !important;border-radius:var(--radius);
   padding:0.7rem 0.875rem;width:100%;color:var(--ink);
-  background:var(--bg);transition:border-color 0.18s;outline:none;
+  background:var(--bg);transition:border-color 0.18s;
+  outline:none !important;box-shadow:none !important;
 }
-.op-input:focus{border-color:var(--accent);}
+.op-input:focus{border-color:var(--accent) !important;outline:none !important;box-shadow:none !important;}
+/* Override Ontraport stylesheet blue borders/outlines */
+.moonray-form input[type="text"],
+.moonray-form input[type="email"]{
+  outline:none !important;box-shadow:none !important;
+  border:1.5px solid var(--border) !important;
+}
+.moonray-form input[type="text"]:focus,
+.moonray-form input[type="email"]:focus{
+  border-color:var(--accent) !important;
+  outline:none !important;box-shadow:none !important;
+}
+.moonray-form-p2c8074f415,
+.moonray-form,
+.op-form-inner{
+  border:none !important;outline:none !important;
+  box-shadow:none !important;background:transparent !important;
+  padding:0 !important;margin:0 !important;
+}
 .op-submit{
   font-family:'Open Sans',Arial,sans-serif;font-size:0.9rem;font-weight:700;
   background:var(--accent);color:#fff;border:none;border-radius:99px;
@@ -318,8 +338,8 @@ body{
 <div class="screen active" id="s0">
   <div class="intro-hero">
     <div class="intro-badge">2 minutes · free</div>
-    <h1 class="intro-title">Something isn't quite right. Let's work out what's actually missing.</h1>
-    <p class="intro-sub">Based on the Primal Human Needs framework, this finder pinpoints which need is least met — and suggests the hypnosis sessions most likely to help.</p>
+    <h1 class="intro-title">You've probably been solving the wrong problem.</h1>
+    <p class="intro-sub">Based on 30 years of helping people change, this finder identifies which of nine core human needs is most out of balance — and matches the sessions most likely to address it at the root.</p>
     <div class="intro-cta-wrap">
       <button class="btn-primary" onclick="goTo(1)">Find what's missing →</button>
     </div>
@@ -1444,10 +1464,41 @@ document.addEventListener('DOMContentLoaded', function(){
   // Build needs grid on load so it's ready
   buildNeedsGrid();
 
-  // Attach form submit handler
+  // Form submit — intercept to build redirect URL with need/profile params
   var form = document.getElementById('hd-needs-op-form');
   if(form){
     form.addEventListener('submit', function(){
+      // Build thank-you URL params from current quiz state
+      var needId   = document.getElementById('op-field-need') ? document.getElementById('op-field-need').value : '';
+      var pathVal  = document.getElementById('op-field-path') ? document.getElementById('op-field-path').value : '';
+      // Extract profile name from path string: q1|needId|profileName|l1label
+      var parts    = pathVal.split('|');
+      var profName = parts[2] || '';
+      var color    = '';
+      // Pass need colour so thank-you page can match the hero
+      if(selNeed) color = encodeURIComponent(selNeed.color);
+      var thankYouBase = 'first-time-hypnosis.html';
+      var params = '?need=' + encodeURIComponent(needId) +
+                   '&profile=' + encodeURIComponent(profName) +
+                   '&color=' + color;
+      // Store in sessionStorage as fallback (same-origin only)
+      try {
+        sessionStorage.setItem('hd_need', needId);
+        sessionStorage.setItem('hd_profile', profName);
+        sessionStorage.setItem('hd_color', selNeed ? selNeed.color : '');
+      } catch(e){}
+      // Ontraport will handle the redirect; we append params to the return URL
+      // via a hidden input so OP passes them through
+      var retInput = form.querySelector('input[name="return_url"]');
+      if(!retInput){
+        retInput = document.createElement('input');
+        retInput.type = 'hidden';
+        retInput.name = 'return_url';
+        form.appendChild(retInput);
+      }
+      retInput.value = thankYouBase + params;
+
+      // Also show inline thank-you in case OP doesn't redirect
       setTimeout(function(){
         var fields = document.getElementById('op-form-fields');
         var thanks = document.getElementById('op-form-thankyou');
