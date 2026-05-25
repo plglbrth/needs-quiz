@@ -148,6 +148,23 @@ body{
 
 /* Session list (results) */
 .plan-label{font-size:0.68rem;font-weight:600;letter-spacing:.1em;color:var(--ink-light);text-transform:uppercase;margin-bottom:0.875rem;}
+.section-label{font-size:0.68rem;font-weight:700;letter-spacing:.1em;color:var(--ink-light);text-transform:uppercase;margin:1.375rem 0 0.75rem;display:flex;align-items:center;gap:0.5rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.top-pick{
+  background:var(--bg-card);border:2px solid var(--accent);border-radius:var(--radius-lg);
+  padding:1.1rem 1.1rem 1.1rem 1.25rem;margin-bottom:0.5rem;
+  display:flex;align-items:flex-start;gap:0.875rem;
+  text-decoration:none;color:inherit;transition:border-color 0.18s,transform 0.12s;
+  position:relative;overflow:hidden;
+}
+.top-pick::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent);}
+.top-pick:hover{border-color:var(--accent-dark);transform:translateX(3px);}
+.top-pick-badge{
+  display:inline-flex;align-items:center;gap:0.3rem;
+  background:var(--accent);color:#fff;border-radius:99px;
+  font-size:0.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 8px;margin-bottom:5px;
+}
 .session-card{
   background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius);
   padding:1rem 1.1rem;margin-bottom:8px;display:flex;align-items:flex-start;gap:0.875rem;
@@ -495,8 +512,9 @@ body{
     </div>
   </div>
 
-  <div class="plan-label">Your personalised plan — 3 core sessions + 2 matched to your answers</div>
-  <div id="results-sessions"></div>
+  <div id="results-top-pick"></div>
+  <div id="results-core"></div>
+  <div id="results-deeper"></div>
 
   <div id="results-proof" style="margin-top:1.25rem;margin-bottom:1.25rem;"></div>
 
@@ -1398,34 +1416,77 @@ function buildResults() {
   document.getElementById('results-profile-name').textContent = profile.name;
   document.getElementById('results-profile-desc').textContent = profile.desc;
 
-  // Sessions: root 3 (fixed, match email) + 2 path-refined from scoring
+  // ── Session logic ────────────────────────────────────────────────────────
   var root = ROOT_SESSIONS[selNeed.id] || [];
+
+  // Path-specific scoring from L1+L2 tags — top 4
+  var pathScored = getResults(selL1.tags, selL2.tags).slice(0, 4);
+
+  // Top pick: highest path-scored session
+  var topPick = pathScored[0] || null;
+  var topPickUrl = topPick ? topPick.u : '';
+
+  // Core plan: root 3, excluding top pick if it appears there
+  var coreRoot = root.filter(function(s){ return s.u !== topPickUrl; });
+
+  // Going deeper: remaining path-scored sessions, excluding top pick and root URLs
   var rootUrls = {};
   root.forEach(function(s){ rootUrls[s.u] = true; });
-
-  // Get path-specific extras — scored from L1+L2 tags, excluding root URLs
-  var extras = getResults(selL1.tags, selL2.tags).filter(function(p){
-    return !rootUrls[p.u];
+  var deeper = pathScored.filter(function(p){
+    return p.u !== topPickUrl && !rootUrls[p.u];
   }).slice(0, 2);
 
-  var sessions = root.concat(extras);
+  // ── Top pick card ────────────────────────────────────────────────────────
+  var topHtml = '';
+  if(topPick) {
+    topHtml =
+      '<div class="section-label">★ Best match for your answers</div>'+
+      '<a class="top-pick" href="'+topPick.u+'" target="_blank">'+
+        '<div style="flex:1;">'+
+          '<div class="top-pick-badge">Start here</div>'+
+          '<div class="session-title" style="font-size:0.95rem;margin-bottom:4px;">'+topPick.t+'</div>'+
+          '<div class="session-sub">'+topPick.s+'</div>'+
+        '</div>'+
+        '<div class="session-arrow" style="color:var(--accent);">→</div>'+
+      '</a>';
+  }
+  document.getElementById('results-top-pick').innerHTML = topHtml;
 
-  var html = '';
-  sessions.forEach(function(p, i){
-    var featured = i < 3 ? ' featured' : '';
-    var numClass = i === 0 ? ' first' : '';
-    html += '<a class="session-card'+featured+'" href="'+p.u+'" target="_blank">'+
-      '<div class="session-num'+numClass+'">'+(i+1)+'</div>'+
-      '<div class="session-info">'+
-        '<div class="session-badge">'+(SESSION_BADGES[i]||'Session '+(i+1))+'</div>'+
-        '<div class="session-title">'+p.t+'</div>'+
-        '<div class="session-sub">'+p.s+'</div>'+
-      '</div>'+
-      '<div class="session-arrow">→</div>'+
+  // ── Core plan cards ──────────────────────────────────────────────────────
+  var coreHtml = '<div class="section-label">Your plan for '+selNeed.label+'</div>';
+  coreRoot.forEach(function(p, i){
+    var badges = ['Foundation','Build on it','Broaden it'];
+    coreHtml +=
+      '<a class="session-card featured" href="'+p.u+'" target="_blank">'+
+        '<div class="session-num">'+(i+1)+'</div>'+
+        '<div class="session-info">'+
+          '<div class="session-badge">'+badges[i]+'</div>'+
+          '<div class="session-title">'+p.t+'</div>'+
+          '<div class="session-sub">'+p.s+'</div>'+
+        '</div>'+
+        '<div class="session-arrow">→</div>'+
       '</a>';
   });
-  document.getElementById('results-sessions').innerHTML = html ||
-    '<p style="color:var(--ink-mid);font-size:0.875rem;">No exact matches found. <a href="https://www.hypnosisdownloads.com/all-downloads" style="color:var(--accent);">Browse all sessions →</a></p>';
+  document.getElementById('results-core').innerHTML = coreHtml;
+
+  // ── Going deeper cards ───────────────────────────────────────────────────
+  var deeperHtml = '';
+  if(deeper.length > 0) {
+    deeperHtml = '<div class="section-label">Going deeper — matched to your answers</div>';
+    deeper.forEach(function(p){
+      deeperHtml +=
+        '<a class="session-card" href="'+p.u+'" target="_blank">'+
+          '<div class="session-num" style="background:var(--bg);color:var(--ink-mid);">+</div>'+
+          '<div class="session-info">'+
+            '<div class="session-badge" style="color:var(--ink-light);">Also worth exploring</div>'+
+            '<div class="session-title">'+p.t+'</div>'+
+            '<div class="session-sub">'+p.s+'</div>'+
+          '</div>'+
+          '<div class="session-arrow">→</div>'+
+        '</a>';
+    });
+  }
+  document.getElementById('results-deeper').innerHTML = deeperHtml;
 
   // Social proof — tailored by familiarity
   var proofHtml = '';
