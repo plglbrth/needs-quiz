@@ -146,12 +146,18 @@ body{
 .default-hero-sub{font-size:0.825rem;color:var(--ink-mid);line-height:1.6;font-weight:300;}
 
 @media(max-width:480px){.app-card{flex-direction:column;align-items:flex-start;}.app-buttons{flex-direction:row;}}
-@media(min-width:768px){.site-header{padding:1.1rem 2.5rem;}.page-wrap{padding:0 2.5rem;}.hero-title{font-size:2rem;}}
+@media(min-width:768px){
+  .site-header{padding:1.1rem 2.5rem;}
+  .page-wrap{padding:0 2.5rem;}
+  .hero-title{font-size:2rem;}
+}
 @media(min-width:1100px){
   body{padding:0 0 5rem;}
   .site-header{padding:1.1rem 3rem;}
   .page-wrap{max-width:780px;padding:0 3rem;}
   .hero-title{font-size:2.25rem;}
+  .two-col{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start;}
+  .two-col>*{min-width:0;}
 }
 </style>
 </head>
@@ -219,26 +225,44 @@ body{
     <iframe src="https://player.vimeo.com/video/1143119752?autoplay=0&muted=0&loop=0&title=0&byline=0&portrait=0" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>
   </div>
 
-  <!-- Audio player — the actual session -->
-  <div class="audio-card">
-    <p class="audio-label">The session — 25 minutes</p>
-    <p class="audio-title">First Time Hypnosis</p>
-    <p class="audio-sub">Find a comfortable position, close your eyes, and follow Roger's voice. The session will guide you through everything — no experience needed.</p>
-    <div class="audio-player-wrap">
-      <audio controls style="width:100%;display:block;">
-        <source src="https://files.ontraport.com/media/66bca6f11a2a4df0ae8497a2d394af59.phpq61jov?Expires=4924514174&Signature=fOLoMAN5TDakJcNk8vJ2qStcwCtk69u3VN6K6dM2dpB98UqiVJcEUfv24oQ2GcVePOcGgt5F70zd1yiBQ7g3-91aAyj8JsimA57-8J~LAmsoyPiHSTXF~hDxmcGQpipCHMSbJ2F8~nmYdUkHE3cYSzWwbBYAYczLMBMogBQAwbrHW~Btraj-aNNHJYE55XOgSB~F8tFWXtcWtAryekm3CZMOxNyr-iXZqvHVdI~VRciX4VMlDMQEncLIw8BTC0-qz9X9LJ~A9~mQT-LWFk3euh1aSgbbkJtk5nBrZVX6Md8uFTO2DcWu6rTgyY3G2bOTKBZ9i4q4bBbCtOBKkzMfjw__&Key-Pair-Id=APKAJVAAMVW6XQYWSTNA" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
+  <!-- Audio + Account CTA — side by side on desktop -->
+  <div class="two-col" style="margin-bottom:1.5rem;">
+    <div>
+      <!-- Audio player — the actual session -->
+      <div class="audio-card" style="margin-bottom:0;">
+        <p class="audio-label">The session — 25 minutes</p>
+        <p class="audio-title">First Time Hypnosis</p>
+        <p class="audio-sub">Find a comfortable position, close your eyes, and follow Roger's voice. The session will guide you through everything — no experience needed.</p>
+        <div class="audio-player-wrap">
+          <audio controls style="width:100%;display:block;">
+            <source src="https://files.ontraport.com/media/66bca6f11a2a4df0ae8497a2d394af59.phpq61jov?Expires=4924514174&Signature=fOLoMAN5TDakJcNk8vJ2qStcwCtk69u3VN6K6dM2dpB98UqiVJcEUfv24oQ2GcVePOcGgt5F70zd1yiBQ7g3-91aAyj8JsimA57-8J~LAmsoyPiHSTXF~hDxmcGQpipCHMSbJ2F8~nmYdUkHE3cYSzWwbBYAYczLMBMogBQAwbrHW~Btraj-aNNHJYE55XOgSB~F8tFWXtcWtAryekm3CZMOxNyr-iXZqvHVdI~VRciX4VMlDMQEncLIw8BTC0-qz9X9LJ~A9~mQT-LWFk3euh1aSgbbkJtk5nBrZVX6Md8uFTO2DcWu6rTgyY3G2bOTKBZ9i4q4bBbCtOBKkzMfjw__&Key-Pair-Id=APKAJVAAMVW6XQYWSTNA" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <div class="chapter-markers">
+          <div class="chapter-row"><div class="chapter-num">1</div><span class="chapter-name">Welcome</span><span class="chapter-time">00:00</span></div>
+          <div class="chapter-row"><div class="chapter-num">2</div><span class="chapter-name">Introduction</span><span class="chapter-time">00:25</span></div>
+          <div class="chapter-row"><div class="chapter-num">3</div><span class="chapter-name">Hypnotic induction</span><span class="chapter-time">04:14</span></div>
+          <div class="chapter-row"><div class="chapter-num">4</div><span class="chapter-name">Reorientation</span><span class="chapter-time">24:28</span></div>
+        </div>
+      </div>
     </div>
-    <div class="chapter-markers">
-      <div class="chapter-row"><div class="chapter-num">1</div><span class="chapter-name">Welcome</span><span class="chapter-time">00:00</span></div>
-      <div class="chapter-row"><div class="chapter-num">2</div><span class="chapter-name">Introduction</span><span class="chapter-time">00:25</span></div>
-      <div class="chapter-row"><div class="chapter-num">3</div><span class="chapter-name">Hypnotic induction</span><span class="chapter-time">04:14</span></div>
-      <div class="chapter-row"><div class="chapter-num">4</div><span class="chapter-name">Reorientation</span><span class="chapter-time">24:28</span></div>
+    <div>
+      <!-- Account CTA -->
+      <div class="account-card">
+        <div class="account-kicker">Keep this session for free</div>
+        <div class="account-title">Save First Time Hypnosis to your free account</div>
+        <div class="account-sub">Create a free account and First Time Hypnosis is yours to keep — listen any time in the app, on any device, without needing to find this page again.</div>
+        <div class="account-benefits">
+          <div class="account-benefit">First Time Hypnosis saved to your library permanently</div>
+          <div class="account-benefit">Listen on iPhone or Android, online or offline</div>
+          <div class="account-benefit">All purchased sessions stored in your account</div>
+          <div class="account-benefit">No payment required to register</div>
+        </div>
+        <a href="https://www.hypnosisdownloads.com/user/reg/first-time-aw" class="btn-white">Create my free account →</a>
+      </div>
     </div>
   </div>
-
-  <!-- Bridge line — shown only when personalised -->
   <div id="bridge-line" style="display:none;margin-bottom:1.5rem;">
     <div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;">
       <div style="font-size:1.25rem;flex-shrink:0;">👇</div>
@@ -581,30 +605,20 @@ body{
     <div style="height:1.5rem;"></div>
   </div>
 
-  <!-- Account CTA — moved here, directly after session plan -->
-  <div class="account-card" style="margin-bottom:1.5rem;">
-    <div class="account-kicker">Keep this session for free</div>
-    <div class="account-title">Save First Time Hypnosis to your free account</div>
-    <div class="account-sub">Create a free account and First Time Hypnosis is yours to keep — listen any time in the app, on any device, without needing to find this page again.</div>
-    <div class="account-benefits">
-      <div class="account-benefit">First Time Hypnosis saved to your library permanently</div>
-      <div class="account-benefit">Listen on iPhone or Android, online or offline</div>
-      <div class="account-benefit">All purchased sessions stored in your account</div>
-      <div class="account-benefit">No payment required to register</div>
-    </div>
-    <a href="https://www.hypnosisdownloads.com/user/reg/first-time-aw" class="btn-white">Create my free account →</a>
-  </div>
-
-  <!-- Founders block -->
-  <div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:1.5rem;overflow:hidden;">
-    <div style="width:100%;height:200px;background:#7b5ea7;overflow:hidden;">
-      <img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/themes/hypnosisnew/images/new/mark-and-roger-testimonials-photo.jpg" alt="Mark Tyrrell and Roger Elliott" style="width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;" onerror="this.parentNode.style.background='#7b5ea7';this.style.display='none';">
-    </div>
-    <div style="padding:1.25rem 1.375rem;">
-      <p style="font-size:0.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);margin-bottom:0.5rem;">About us</p>
-      <p style="font-size:0.875rem;color:var(--ink);line-height:1.7;font-weight:300;margin-bottom:0.75rem;">"We have helped over a million people with hypnosis since 1998. Uncommon Hypnosis is a creative, permissive, deeply relaxing approach to improving psychological wellbeing and performance that anyone can benefit from."</p>
-      <p style="font-size:0.8rem;font-weight:700;color:var(--ink);margin-bottom:2px;">Mark Tyrrell &amp; Roger Elliott</p>
-      <p style="font-size:0.75rem;color:var(--ink-mid);font-weight:300;"><a href="https://www.hypnosisdownloads.com/help-center/about-us" style="color:var(--accent);text-decoration:none;">Co-founders of Uncommon Knowledge →</a></p>
+  <!-- Founders block — styled after guarantee-box on site -->
+  <div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.375rem 1.375rem 1.25rem;margin-bottom:1.5rem;overflow:hidden;">
+    <p style="font-family:'Open Sans',Arial,sans-serif;font-size:0.8rem;font-weight:700;color:var(--ink);margin-bottom:1rem;">About Uncommon Knowledge</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;">
+      <img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/themes/hypnosisnew/images/new/mark-and-roger-testimonials-photo.jpg"
+           alt="Mark Tyrrell and Roger Elliott of Hypnosis Downloads"
+           style="width:299px;max-width:100%;height:auto;border-radius:var(--radius);flex-shrink:0;display:block;"
+           onerror="this.style.display='none';">
+      <div style="flex:1;min-width:200px;background:#f5f0f8;border-radius:var(--radius);padding:1rem 1.1rem;position:relative;">
+        <div style="position:absolute;top:18px;left:-8px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:8px solid #f5f0f8;"></div>
+        <p style="font-size:0.875rem;color:var(--ink);line-height:1.7;font-weight:300;margin-bottom:0.625rem;">"We have helped over a million people with hypnosis since 1998. Uncommon Hypnosis is a creative, permissive, deeply relaxing approach to improving psychological wellbeing and performance that anyone can benefit from."</p>
+        <p style="font-size:0.8rem;font-weight:700;color:var(--ink);margin-bottom:2px;">Mark Tyrrell &amp; Roger Elliott</p>
+        <p style="font-size:0.75rem;color:var(--ink-mid);font-weight:300;margin:0;"><a href="https://www.hypnosisdownloads.com/help-center/about-us" style="color:var(--accent);text-decoration:none;">Co-founders of Uncommon Knowledge →</a></p>
+      </div>
     </div>
   </div>
 
