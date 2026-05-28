@@ -624,6 +624,7 @@ var q1='', selNeed=null, selL1=null, selL2=null, currentScreen=0;
 var NEEDS = [
   {
     id:'attention', num:1, label:'Attention & Connection', icon:'◎',
+    headline:'I feel lonely or unseen',
     desc:'Feeling isolated, lonely, or like nobody really sees you',
     color:'#5a7fd4', lightBg:'#eef2fb',
     question:'How is this showing up for you?',
@@ -668,6 +669,7 @@ var NEEDS = [
   },
   {
     id:'mindbody', num:2, label:'Mind / Body Balance', icon:'◑',
+    headline:'I feel exhausted and depleted',
     desc:'Neglecting sleep, movement, or nutrition — treating yourself as a machine',
     color:'#4a9e82', lightBg:'#eaf5f0',
     question:"What's getting neglected?",
@@ -712,6 +714,7 @@ var NEEDS = [
   },
   {
     id:'purpose', num:3, label:'Purpose & Meaning', icon:'◈',
+    headline:'Life feels flat or I\'ve lost direction',
     desc:'Feeling directionless, stuck, or like your imagination has turned against you',
     color:'#b07d3a', lightBg:'#faf3e8',
     question:"What does this feel like for you?",
@@ -756,6 +759,7 @@ var NEEDS = [
   },
   {
     id:'community', num:4, label:'Community & Contribution', icon:'◉',
+    headline:'I don\'t feel like I belong anywhere',
     desc:"Feeling like you don't belong, or that your life doesn't make a difference",
     color:'#8a5caa', lightBg:'#f3edf8',
     question:"What feels missing?",
@@ -800,6 +804,7 @@ var NEEDS = [
   },
   {
     id:'challenge', num:5, label:'Challenge & Creativity', icon:'◇',
+    headline:'I feel bored, blocked, or stuck in a rut',
     desc:'Feeling bored, unstretched, or blocked from learning and expressing yourself',
     color:'#c0573a', lightBg:'#faeee9',
     question:"What's the shape of this for you?",
@@ -844,6 +849,7 @@ var NEEDS = [
   },
   {
     id:'intimacy', num:6, label:'Intimacy & Trust', icon:'♡',
+    headline:'I have no one I can really open up to',
     desc:'No one to truly open up to — emotional walls, loss, or a relationship in trouble',
     color:'#c05080', lightBg:'#fbedf3',
     question:"What's the shape of this for you?",
@@ -888,6 +894,7 @@ var NEEDS = [
   },
   {
     id:'control', num:7, label:'Sense of Control', icon:'◐',
+    headline:'I feel overwhelmed or out of control',
     desc:'Feeling overwhelmed, powerless, or at the mercy of your own mind or habits',
     color:'#507a9e', lightBg:'#ecf2f8',
     question:"Where do you feel out of control?",
@@ -932,6 +939,7 @@ var NEEDS = [
   },
   {
     id:'status', num:8, label:'Status & Recognition', icon:'◆',
+    headline:'I\'m not getting the recognition I deserve',
     desc:'Feeling invisible, undervalued, not good enough, or unable to stand your ground',
     color:'#7a6e30', lightBg:'#f5f2e6',
     question:"How does this come up for you?",
@@ -976,6 +984,7 @@ var NEEDS = [
   },
   {
     id:'safety', num:9, label:'Safety & Security', icon:'△',
+    headline:'I feel anxious or never quite at ease',
     desc:'Underlying fear, chronic insecurity, or the world feeling threatening',
     color:'#4a8080', lightBg:'#eaf2f2',
     question:"Where does the insecurity come from?",
@@ -1257,8 +1266,8 @@ function buildNeedsGrid() {
       '>'+
       '<div class="need-icon" style="color:'+n.color+'">'+n.icon+'</div>'+
       '<div class="need-num" style="color:'+n.color+'">Need '+n.num+'</div>'+
-      '<div class="need-label">'+n.label+'</div>'+
-      '<div class="need-desc">'+n.desc+'</div>'+
+      '<div class="need-label">'+n.headline+'</div>'+
+      '<div class="need-desc" style="color:'+n.color+';opacity:0.8;font-weight:600;font-size:0.68rem;margin-bottom:2px;">'+n.label+'</div>'+
       '</button>';
   });
   document.getElementById('needs-grid').innerHTML = html;
