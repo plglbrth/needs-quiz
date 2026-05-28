@@ -133,8 +133,32 @@ body{
 .bc-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:0.72rem;font-weight:600;}
 .bc-sep{color:var(--border);font-size:1rem;}
 
-/* Loading message fade */
-#loading-msg{transition:opacity 0.15s ease;}
+/* Sticky CTA bar */
+.sticky-cta{
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:var(--accent);
+  padding:0.875rem 1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.15);
+  transform:translateY(100%);
+  transition:transform 0.3s ease, opacity 0.3s ease;
+  opacity:0;
+}
+.sticky-cta.visible{transform:translateY(0);opacity:1;}
+.sticky-cta-btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:#fff;color:var(--accent);border:none;border-radius:99px;
+  padding:0.75rem 1.5rem;font-family:'Open Sans',Arial,sans-serif;
+  font-size:0.875rem;font-weight:700;cursor:pointer;
+  transition:opacity 0.18s,transform 0.12s;
+  white-space:nowrap;
+}
+.sticky-cta-btn:hover{opacity:0.92;transform:translateY(-1px);}
+.sticky-cta-sub{
+  font-size:0.72rem;color:rgba(255,255,255,0.8);
+  margin-left:1rem;font-weight:300;
+}
+@media(max-width:480px){.sticky-cta-sub{display:none;}}
 
 /* Stat row */
 .stat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.375rem;}
@@ -1211,7 +1235,12 @@ function startLoading() {
     } else {
       bar.style.width = '100%';
       // Small pause at 100% before reveal
-      setTimeout(function(){ goTo(5); }, 300);
+      setTimeout(function(){
+        goTo(5);
+        setTimeout(function(){
+          if(typeof updateSticky === 'function') updateSticky();
+        }, 5000);
+      }, 300);
     }
   }
   requestAnimationFrame(tick);
@@ -1631,7 +1660,65 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
+  // ── Sticky CTA bar ────────────────────────────────────────────────────────
+  var stickyCta     = document.getElementById('sticky-cta');
+  var formWrap      = document.querySelector('.op-form-wrap');
+  var stickyVisible = false;
+  var formSubmitted = false;
+
+  function scrollToForm() {
+    if(formWrap) {
+      formWrap.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(function(){
+        var fn = document.getElementById('mr-needs-firstname');
+        if(fn) fn.focus();
+      }, 600);
+    }
+  }
+  window.scrollToForm = scrollToForm;
+  window.updateSticky = updateSticky;
+
+  function updateSticky() {
+    if(formSubmitted || currentScreen !== 5) { hideStickyBar(); return; }
+    if(!formWrap) return;
+    var rect = formWrap.getBoundingClientRect();
+    var formInView = rect.top < window.innerHeight - 80 && rect.bottom > 80;
+    if(formInView) { hideStickyBar(); } else { showStickyBar(); }
+  }
+
+  function showStickyBar() {
+    if(!stickyVisible) {
+      stickyCta.classList.add('visible');
+      stickyCta.setAttribute('aria-hidden','false');
+      stickyVisible = true;
+    }
+  }
+
+  function hideStickyBar() {
+    if(stickyVisible) {
+      stickyCta.classList.remove('visible');
+      stickyCta.setAttribute('aria-hidden','true');
+      stickyVisible = false;
+    }
+  }
+
+  window.addEventListener('scroll', updateSticky, {passive:true});
+
+  // Also hide after form submit
+  if(form) {
+    form.addEventListener('submit', function(){
+      formSubmitted = true;
+      hideStickyBar();
+    });
+  }
+
 });
 </script>
+<!-- Sticky CTA bar — results page only -->
+<div class="sticky-cta" id="sticky-cta" aria-hidden="true">
+  <button class="sticky-cta-btn" onclick="scrollToForm()">🎁 Get my free session + results</button>
+  <span class="sticky-cta-sub">Enter your email — takes 10 seconds</span>
+</div>
+
 </body>
 </html>
